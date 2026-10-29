@@ -161,9 +161,8 @@ def main():
 
     image_url = st.text_input("Or enter an image URL")
 
-    if st.button("Analyze Image"):
-        try:
-            
+if st.button("Analyze Image"):
+    try:
         if uploaded_file is not None:
             img = Image.open(uploaded_file).convert("RGB")
             st.image(img, caption="Uploaded Image", use_container_width=True)
@@ -185,40 +184,36 @@ def main():
             probabilities = torch.softmax(outputs.logits, dim=1)[0]
 
         result = [
-            {"label": model.config.id2label[i], "score": probabilities[i].item()}
+            {
+                "label": model.config.id2label[i],
+                "score": probabilities[i].item()
+            }
             for i in range(len(probabilities))
         ]
 
+        st.subheader("Detection Result")
+
+        for item in result:
+            st.write(f"{item['label']}: {item['score'] * 100:.2f}% confidence")
+
+        top_result = max(result, key=lambda item: item["score"])
+        label = top_result["label"].lower()
+
+        if "fake" in label:
+            st.error("⚠️ The model classified this image as FAKE.")
+        elif "real" in label:
+            st.success("✅ The model classified this image as REAL.")
+        else:
+            st.warning("The model returned an unknown label. Please check the scores.")
+
+        st.write("DEBUG OUTPUT:", result)
+
+        st.info("This is an AI prediction, not a guarantee that the image is genuine or manipulated.")
+
+    except Exception as e:
+        st.error(f"Could not analyze the image: {e}")
 
 
-            else:
-                st.warning("Please upload an image or enter an image URL.")
-                return
-
-            st.subheader("Detection Result")
-
-            for item in result:
-                st.write(f"{item['label']}: {item['score'] * 100:.2f}% confidence")
-
-            st.write("DEBUG OUTPUT:", result)
-
-            top_result = max(result, key=lambda item: item["score"])
-            label = top_result["label"].lower()
-
-            if "fake" in label:
-                st.error("⚠️ The model classified this image as FAKE.")
-            elif "real" in label:
-                st.success("✅ The model classified this image as REAL.")
-            else:
-                st.warning("The model returned an unknown label. Please check the scores.")
-
-                
-                st.write("DEBUG - Model's original prediction:", result)
-
-            st.info("This is an AI prediction, not a guarantee that the image is genuine or manipulated.")
-
-        except Exception as e:
-            st.error(f"Could not analyze the image: {e}")
 
 
 if __name__ == "__main__":
