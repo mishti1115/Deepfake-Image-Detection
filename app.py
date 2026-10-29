@@ -173,9 +173,9 @@ if st.button("Analyze Image"):
             img = Image.open(BytesIO(response.content)).convert("RGB")
             st.image(img, caption="Image to Analyze", use_container_width=True)
 
-                    else:
-                st.warning("Please upload an image or enter an image URL.")
-                st.stop()
+        else:
+            st.warning("Please upload an image or enter an image URL.")
+            st.stop()
 
         inputs = processor(images=img, return_tensors="pt")
 
@@ -204,14 +204,17 @@ if st.button("Analyze Image"):
         elif "real" in label:
             st.success("✅ The model classified this image as REAL.")
         else:
-            st.warning("The model returned an unknown label. Please check the scores.")
+            st.warning("The model returned an unknown label.")
 
         st.write("DEBUG OUTPUT:", result)
 
-        st.info("This is an AI prediction, not a guarantee that the image is genuine or manipulated.")
+        st.info(
+            "This is an AI prediction, not a guarantee that the image is genuine or manipulated."
+        )
 
     except Exception as e:
         st.error(f"Could not analyze the image: {e}")
+
 
 
 
