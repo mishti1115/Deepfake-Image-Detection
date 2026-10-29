@@ -2,7 +2,7 @@ import torch
 import streamlit as st
 import csv
 import os
-from transformers import pipeline
+from transformers import AutoImageProcessor, SiglipForImageClassification
 import requests
 from PIL import Image
 from io import BytesIO
