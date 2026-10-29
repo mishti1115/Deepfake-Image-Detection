@@ -163,17 +163,33 @@ def main():
 
     if st.button("Analyze Image"):
         try:
-            if uploaded_file is not None:
-                img = Image.open(uploaded_file).convert("RGB")
-                st.image(img, caption="Uploaded Image", use_container_width=True)
-                result = model(img)
+            
+        if uploaded_file is not None:
+            img = Image.open(uploaded_file).convert("RGB")
+            st.image(img, caption="Uploaded Image", use_container_width=True)
 
-            elif image_url.strip():
-                response = requests.get(image_url, timeout=20)
-                response.raise_for_status()
-                img = Image.open(BytesIO(response.content)).convert("RGB")
-                st.image(img, caption="Image to Analyze", use_container_width=True)
-                result = model(img)
+        elif image_url.strip():
+            response = requests.get(image_url, timeout=20)
+            response.raise_for_status()
+            img = Image.open(BytesIO(response.content)).convert("RGB")
+            st.image(img, caption="Image to Analyze", use_container_width=True)
+
+        else:
+            st.warning("Please upload an image or enter an image URL.")
+            return
+
+        inputs = processor(images=img, return_tensors="pt")
+
+        with torch.no_grad():
+            outputs = model(**inputs)
+            probabilities = torch.softmax(outputs.logits, dim=1)[0]
+
+        result = [
+            {"label": model.config.id2label[i], "score": probabilities[i].item()}
+            for i in range(len(probabilities))
+        ]
+
+
 
             else:
                 st.warning("Please upload an image or enter an image URL.")
