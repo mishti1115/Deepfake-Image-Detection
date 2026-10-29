@@ -189,6 +189,7 @@ def main():
                 st.success("✅ The model classified this image as REAL.")
             else:
                 st.warning("The model returned an unknown label. Please check the scores.")
+                st.write("DEBUG - Model's original prediction:", result)
 
             st.info("This is an AI prediction, not a guarantee that the image is genuine or manipulated.")
 
