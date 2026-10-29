@@ -173,9 +173,9 @@ if st.button("Analyze Image"):
             img = Image.open(BytesIO(response.content)).convert("RGB")
             st.image(img, caption="Image to Analyze", use_container_width=True)
 
-        else:
-            st.warning("Please upload an image or enter an image URL.")
-            return
+                    else:
+                st.warning("Please upload an image or enter an image URL.")
+                st.stop()
 
         inputs = processor(images=img, return_tensors="pt")
 
