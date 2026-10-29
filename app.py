@@ -52,14 +52,17 @@ legal_information = {
 
 @st.cache_resource
 def load_model():
- return pipeline(
- "image-classification",
- model="prithivMLmods/deepfake-detector-model-v1"
-)
+    model_name = "prithivMLmods/deepfake-detector-model-v1"
+
+    processor = AutoImageProcessor.from_pretrained(model_name)
+    model = SiglipForImageClassification.from_pretrained(model_name)
+    model.eval()
+
+    return processor, model
 
 
+processor, model = load_model()
 
-model = load_model()
 
 # Validate image input
 def validate_image(response):
