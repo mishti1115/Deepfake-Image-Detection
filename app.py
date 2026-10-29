@@ -181,6 +181,8 @@ def main():
             for item in result:
                 st.write(f"{item['label']}: {item['score'] * 100:.2f}% confidence")
 
+            st.write("DEBUG OUTPUT:", result)
+
             top_result = max(result, key=lambda item: item["score"])
             label = top_result["label"].lower()
 
